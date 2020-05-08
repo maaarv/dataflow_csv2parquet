@@ -12,3 +12,6 @@ py_app	<full path csv2parquet.py in object storage: e.g. oci://codeBucket@namesp
 Upload csv2parquet.py to object storage
 
 Create an event to trigger your fn-application when a new file is uploaded to the input bucket
+
+Create a folder on your local system with all these files appart from csv2parquet.py
+Follow the Oracle documentation to upload the function to a function repository and setup functions
