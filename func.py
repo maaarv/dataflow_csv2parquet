@@ -28,7 +28,6 @@ def do(signer):
    # configurations of function
    app_name = os.environ['app_name']
    py_app = os.environ['py_app']
-   data_flow_app_ocid = os.environ['data_flow_app_ocid']
    compartment_ocid = os.environ['compartment_ocid']
    object_storage_namespace = os.environ['namespace']
    input_bucket = os.environ['input_bucket']
