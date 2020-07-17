@@ -73,7 +73,7 @@ def do(signer):
             
             # use existing Data Flow application if app_id was provided, otherwise create a new application
             if app_id:
-               application = get_application(app_id);
+               application = data_flow.get_application(app_id);
             else:
                # Create a new Data Flow Application
                input_parameter = oci.data_flow.models.ApplicationParameter(
