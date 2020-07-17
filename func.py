@@ -26,6 +26,7 @@ def do(signer):
    checker = False
 
    # configurations of function
+   app_id=os.environ['app_id']
    app_name = os.environ['app_name']
    py_app = os.environ['py_app']
    compartment_ocid = os.environ['compartment_ocid']
@@ -69,37 +70,41 @@ def do(signer):
             
             csv_input_path = 'oci://' + input_bucket + '@' + object_storage_namespace + '/' + csv_filename
             parquet_output_path = 'oci://' + output_bucket + '@' + object_storage_namespace + '/' + parquet_filename
-      
-            # Create a new Data Flow Application
-            input_parameter = oci.data_flow.models.ApplicationParameter(
-                name="input_bucket",
-                value=csv_input_path,
-            )
-            output_parameter = oci.data_flow.models.ApplicationParameter(
-                name="output_bucket",
-                value=parquet_output_path
-            )
-            create_application_details = oci.data_flow.models.CreateApplicationDetails(
-                compartment_id=compartment_ocid,
-                display_name=app_name+"_"+str(counter),
-                driver_shape="VM.Standard2.1",
-                executor_shape="VM.Standard2.1",
-                num_executors=1,
-                spark_version="2.4.4",
-                file_uri=py_app,
-                language="PYTHON",
-                arguments=["${input_bucket}", "${output_bucket}"],
-                parameters=[input_parameter, output_parameter],
-            )
-            logging.info("Creating the Data Flow Application for file " + csv_filename)
-            application = data_flow.create_application(
-                create_application_details=create_application_details
-            )
-            if application.status != 200:
-                logging.info("Failed to create Data Flow Application for file " + csv_filename)
-                logging.info(application.data)
+            
+            # use existing Data Flow application if app_id was provided, otherwise create a new application
+            if app_id:
+               application = get_application(app_id);
             else:
-                logging.info("Data Flow Application ID is " + application.data.id)
+               # Create a new Data Flow Application
+               input_parameter = oci.data_flow.models.ApplicationParameter(
+                   name="input_bucket",
+                   value=csv_input_path,
+               )
+               output_parameter = oci.data_flow.models.ApplicationParameter(
+                   name="output_bucket",
+                   value=parquet_output_path
+               )
+               create_application_details = oci.data_flow.models.CreateApplicationDetails(
+                   compartment_id=compartment_ocid,
+                   display_name=app_name+"_"+str(counter),
+                   driver_shape="VM.Standard2.1",
+                   executor_shape="VM.Standard2.1",
+                   num_executors=1,
+                   spark_version="2.4.4",
+                   file_uri=py_app,
+                   language="PYTHON",
+                   arguments=["${input_bucket}", "${output_bucket}"],
+                   parameters=[input_parameter, output_parameter],
+               )
+               logging.info("Creating the Data Flow Application for file " + csv_filename)
+               application = data_flow.create_application(
+                   create_application_details=create_application_details
+               )
+               if application.status != 200:
+                   logging.info("Failed to create Data Flow Application for file " + csv_filename)
+                   logging.info(application.data)
+               else:
+                   logging.info("Data Flow Application ID is " + application.data.id)
       
             # Create a Run from this Application
             logging.info("Creating the Data Flow Run")
