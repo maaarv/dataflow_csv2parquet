@@ -14,5 +14,4 @@ Oracle OCI: Fn python code to start a Data Flow application &amp; Data Flow conv
 1. Create a dynamic group to include this function. Write a policy to allow the members of the dynamic group (your function) to access the input and the output buckets.
 1. Create an event to trigger your fn-application when a new file is uploaded to the input bucket.
 
-1. Create a folder on your local system with all these files appart from csv2parquet.py
-1. Follow the Oracle documentation to upload the function to a function repository and setup functions
+1. Create a folder on your local system with all these files apart from csv2parquet.py. Follow the Oracle documentation to upload the function to a function repository and setup functions.
